@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSalon } from '../context/SalonContext';
+import { BarberAvatar } from '../components/BarberAvatar';
 import { 
   Shield, 
   Settings, 
@@ -9,7 +10,6 @@ import {
   CheckCircle2, 
   ToggleLeft, 
   ToggleRight, 
-  Plus, 
   RotateCcw, 
   Sparkles,
   Scissors,
@@ -35,7 +35,6 @@ export const Admin: React.FC = () => {
   const noShowCustomers = state.queue.filter(c => c.status === 'no_show');
   const activeWaiting = state.queue.filter(c => c.status === 'waiting');
 
-  // Average wait time for customers who were served or waiting
   const totalWaitMinutes = completedCustomers.reduce((acc, c) => {
     if (c.calledAt && c.createdAt) {
       return acc + Math.round((c.calledAt - c.createdAt) / (1000 * 60));
@@ -45,7 +44,7 @@ export const Admin: React.FC = () => {
 
   const avgWait = completedCustomers.length > 0 
     ? Math.round(totalWaitMinutes / completedCustomers.length) 
-    : 18; // default benchmark
+    : 18;
 
   const handleResetDemo = () => {
     resetToDemo();
@@ -56,19 +55,19 @@ export const Admin: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       
       {/* Admin Title & Reset Notice */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-charcoal-800">
         <div>
-          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-charcoal-800 border border-charcoal-700 text-xs text-gold-400 font-semibold mb-1">
+          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-charcoal-900 border border-charcoal-700/80 text-xs text-gold-400 font-bold mb-1.5 shadow-sm">
             <Shield className="w-3.5 h-3.5" />
             <span>Admin PIN: 1234</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+          <h1 className="text-3xl sm:text-4xl font-black text-white font-serif">
             {t('adminTitle')}
           </h1>
-          <p className="text-xs sm:text-sm text-gray-400">
+          <p className="text-xs sm:text-sm text-gray-400 mt-0.5">
             {t('adminSubtitle')}
           </p>
         </div>
@@ -76,7 +75,7 @@ export const Admin: React.FC = () => {
         {/* Reset Demo Button */}
         <button
           onClick={handleResetDemo}
-          className="touch-target inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-charcoal-800 hover:bg-charcoal-700 text-gold-400 border border-charcoal-700 text-xs sm:text-sm font-bold shadow transition-colors"
+          className="touch-target inline-flex items-center justify-center space-x-2 px-5 py-3 rounded-2xl bg-charcoal-900 hover:bg-charcoal-800 text-gold-400 border border-charcoal-700/80 hover:border-gold-500/40 text-xs sm:text-sm font-bold shadow-md transition-all"
         >
           <RotateCcw className="w-4 h-4" />
           <span>{t('resetDemoDataButton')}</span>
@@ -84,7 +83,7 @@ export const Admin: React.FC = () => {
       </div>
 
       {resetMessage && (
-        <div className="p-4 rounded-2xl bg-emerald-950/70 border border-emerald-500/80 text-emerald-200 text-sm font-semibold flex items-center space-x-2">
+        <div className="p-4 rounded-2xl bg-emerald-950/80 border border-emerald-500 text-emerald-200 text-sm font-bold flex items-center space-x-2 shadow-xl">
           <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
           <span>{resetMessage}</span>
         </div>
@@ -92,47 +91,47 @@ export const Admin: React.FC = () => {
 
       {/* Today's Stats Cards */}
       <div className="space-y-3">
-        <h2 className="text-sm uppercase font-bold tracking-wider text-gray-400">
+        <h2 className="text-xs font-black uppercase tracking-widest text-gold-400">
           {t('todayStatsHeading')}
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           
-          <div className="p-5 rounded-2xl bg-charcoal-900 border border-charcoal-800 space-y-1">
+          <div className="p-5 rounded-3xl glass-panel space-y-1 shadow-lg">
             <div className="flex items-center justify-between text-gray-400">
               <span className="text-xs font-semibold">{t('customersServedToday')}</span>
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-white">
+            <div className="text-3xl sm:text-4xl font-black text-white font-mono">
               {completedCustomers.length}
             </div>
           </div>
 
-          <div className="p-5 rounded-2xl bg-charcoal-900 border border-charcoal-800 space-y-1">
+          <div className="p-5 rounded-3xl glass-panel space-y-1 shadow-lg">
             <div className="flex items-center justify-between text-gray-400">
               <span className="text-xs font-semibold">{t('averageWaitTime')}</span>
               <Clock className="w-4 h-4 text-gold-400" />
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-gold-400">
-              {avgWait} {t('minutes')}
+            <div className="text-3xl sm:text-4xl font-black text-gold-400 font-mono">
+              {avgWait} <span className="text-xs font-sans text-gray-400">{t('minutes')}</span>
             </div>
           </div>
 
-          <div className="p-5 rounded-2xl bg-charcoal-900 border border-charcoal-800 space-y-1">
+          <div className="p-5 rounded-3xl glass-panel space-y-1 shadow-lg">
             <div className="flex items-center justify-between text-gray-400">
               <span className="text-xs font-semibold">{t('totalNoShows')}</span>
               <UserX className="w-4 h-4 text-rose-400" />
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-rose-400">
+            <div className="text-3xl sm:text-4xl font-black text-rose-400 font-mono">
               {noShowCustomers.length}
             </div>
           </div>
 
-          <div className="p-5 rounded-2xl bg-charcoal-900 border border-charcoal-800 space-y-1">
+          <div className="p-5 rounded-3xl glass-panel space-y-1 shadow-lg">
             <div className="flex items-center justify-between text-gray-400">
               <span className="text-xs font-semibold">{t('activeInQueue')}</span>
               <Users className="w-4 h-4 text-gold-400" />
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-white">
+            <div className="text-3xl sm:text-4xl font-black text-white font-mono">
               {activeWaiting.length}
             </div>
           </div>
@@ -144,13 +143,13 @@ export const Admin: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* Online Queue Switch */}
-        <div className="p-6 rounded-3xl bg-charcoal-900 border border-charcoal-800 space-y-4">
+        <div className="p-6 rounded-3xl glass-panel space-y-4 shadow-xl">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-bold text-base text-white">
+              <h3 className="font-bold text-base sm:text-lg text-white font-serif">
                 {t('onlineQueueToggle')}
               </h3>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 mt-1 max-w-xs leading-snug">
                 {state.isOnlineQueueOpen ? t('onlineQueueOpenDesc') : t('onlineQueueClosedDesc')}
               </p>
             </div>
@@ -170,19 +169,19 @@ export const Admin: React.FC = () => {
             </button>
           </div>
 
-          <div className={`p-3 rounded-xl text-xs font-semibold ${
+          <div className={`p-3.5 rounded-2xl text-xs font-bold ${
             state.isOnlineQueueOpen
               ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800'
               : 'bg-amber-950/60 text-amber-300 border border-amber-800'
           }`}>
-            Status: {state.isOnlineQueueOpen ? 'OPEN for remote customers' : 'CLOSED (Walk-ins only at desk)'}
+            Queue State: {state.isOnlineQueueOpen ? 'OPEN (Remote phone bookings active)' : 'CLOSED (Reception walk-ins only)'}
           </div>
         </div>
 
         {/* Barbers on Duty Today */}
-        <div className="p-6 rounded-3xl bg-charcoal-900 border border-charcoal-800 space-y-4">
+        <div className="p-6 rounded-3xl glass-panel space-y-4 shadow-xl">
           <div>
-            <h3 className="font-bold text-base text-white">
+            <h3 className="font-bold text-base sm:text-lg text-white font-serif">
               {t('barbersOnDutyHeading')}
             </h3>
             <p className="text-xs text-gray-400 mt-1">
@@ -190,35 +189,36 @@ export const Admin: React.FC = () => {
             </p>
           </div>
 
-          <div className="space-y-2.5">
+          <div className="space-y-3">
             {state.barbers.map(barber => (
               <div
                 key={barber.id}
-                className="flex items-center justify-between p-3 rounded-2xl bg-charcoal-800/80 border border-charcoal-700/80"
+                className="flex items-center justify-between p-3.5 rounded-2xl bg-charcoal-900/90 border border-charcoal-700/80"
               >
-                <div className="flex items-center space-x-3">
-                  <img
-                    src={barber.avatar}
-                    alt={barber.name}
-                    className="w-10 h-10 rounded-full object-cover"
+                <div className="flex items-center space-x-3.5">
+                  <BarberAvatar
+                    barberId={barber.id}
+                    name={barber.name}
+                    size="md"
+                    isOnDuty={barber.isOnDuty}
                   />
                   <div>
                     <div className="text-sm font-bold text-white">{barber.name}</div>
                     <div className="text-xs text-gray-400">
-                      {barber.isOnDuty ? 'On Duty' : 'Off Duty'}
+                      {barber.isOnDuty ? 'On Duty Today' : 'Off Duty'}
                     </div>
                   </div>
                 </div>
 
                 <button
                   onClick={() => toggleBarberDuty(barber.id)}
-                  className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold transition-colors ${
+                  className={`touch-target px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                     barber.isOnDuty
-                      ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
-                      : 'bg-charcoal-700 text-gray-400'
+                      ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-md'
+                      : 'bg-charcoal-800 text-gray-400 hover:text-white'
                   }`}
                 >
-                  {barber.isOnDuty ? 'On Duty' : 'Off Duty'}
+                  {barber.isOnDuty ? 'Active' : 'Off Duty'}
                 </button>
               </div>
             ))}
@@ -228,14 +228,14 @@ export const Admin: React.FC = () => {
       </div>
 
       {/* Services Manager (Name EN/GU, Minutes, Price, On/Off) */}
-      <div className="p-6 rounded-3xl bg-charcoal-900 border border-charcoal-800 space-y-4">
+      <div className="p-6 sm:p-8 rounded-3xl glass-panel space-y-5 shadow-xl">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-base sm:text-lg text-white">
+            <h3 className="font-bold text-lg sm:text-xl text-white font-serif">
               {t('servicesManagerHeading')}
             </h3>
-            <p className="text-xs text-gray-400">
-              Toggle visibility, update prices, or adjust durations.
+            <p className="text-xs text-gray-400 mt-0.5">
+              Adjust prices, service durations, or toggle service availability on the customer join screen.
             </p>
           </div>
         </div>
@@ -249,8 +249,8 @@ export const Admin: React.FC = () => {
                 key={service.id}
                 className={`p-4 rounded-2xl border transition-all ${
                   service.isActive
-                    ? 'bg-charcoal-800/70 border-charcoal-700'
-                    : 'bg-charcoal-900/60 border-charcoal-800 opacity-60'
+                    ? 'bg-charcoal-900/90 border-charcoal-700/80 shadow-md'
+                    : 'bg-charcoal-950/60 border-charcoal-800 opacity-60'
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
@@ -259,10 +259,10 @@ export const Admin: React.FC = () => {
                   </div>
                   <button
                     onClick={() => updateService(service.id, { isActive: !service.isActive })}
-                    className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold transition-colors ${
+                    className={`touch-target px-3.5 py-1.5 rounded-xl text-xs font-black transition-all ${
                       service.isActive
-                        ? 'bg-gold-500 text-charcoal-950 font-extrabold'
-                        : 'bg-charcoal-700 text-gray-400'
+                        ? 'gold-gradient-bg text-charcoal-950 shadow-sm'
+                        : 'bg-charcoal-800 text-gray-400'
                     }`}
                   >
                     {service.isActive ? 'Active' : 'Hidden'}
@@ -271,25 +271,25 @@ export const Admin: React.FC = () => {
 
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   <div>
-                    <label className="text-gray-400 block mb-1">
+                    <label className="text-gray-400 font-semibold block mb-1">
                       {t('durationLabel')}
                     </label>
                     <input
                       type="number"
                       value={service.durationMinutes}
                       onChange={(e) => updateService(service.id, { durationMinutes: Number(e.target.value) || 15 })}
-                      className="touch-target w-full px-3 py-1.5 rounded-lg bg-charcoal-900 border border-charcoal-700 text-white font-mono"
+                      className="touch-target w-full px-3 py-2 rounded-xl bg-charcoal-950 border border-charcoal-700 text-white font-mono"
                     />
                   </div>
                   <div>
-                    <label className="text-gray-400 block mb-1">
+                    <label className="text-gray-400 font-semibold block mb-1">
                       {t('priceLabel')}
                     </label>
                     <input
                       type="number"
                       value={service.price}
                       onChange={(e) => updateService(service.id, { price: Number(e.target.value) || 50 })}
-                      className="touch-target w-full px-3 py-1.5 rounded-lg bg-charcoal-900 border border-charcoal-700 text-gold-400 font-mono font-bold"
+                      className="touch-target w-full px-3 py-2 rounded-xl bg-charcoal-950 border border-charcoal-700 text-gold-400 font-mono font-bold"
                     />
                   </div>
                 </div>

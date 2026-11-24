@@ -1,10 +1,11 @@
 import { Barber, Service, Customer, SalonState } from '../types';
+import { barberAvatars } from './avatars';
 
 export const initialBarbers: Barber[] = [
   {
     id: 'ravi',
     name: 'Ravi Sharma',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    avatar: barberAvatars.ravi,
     isOnDuty: true,
     isOnBreak: false,
     currentCustomerId: 'cust-1',
@@ -13,7 +14,7 @@ export const initialBarbers: Barber[] = [
   {
     id: 'amit',
     name: 'Amit Verma',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    avatar: barberAvatars.amit,
     isOnDuty: true,
     isOnBreak: false,
     currentCustomerId: 'cust-2',
@@ -22,7 +23,7 @@ export const initialBarbers: Barber[] = [
   {
     id: 'imran',
     name: 'Imran Khan',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+    avatar: barberAvatars.imran,
     isOnDuty: true,
     isOnBreak: true, // on break initially as in prompt
     currentCustomerId: null,

@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSalon } from '../context/SalonContext';
 import { isValidPhoneNumber, calculateEstimatedWaitTime } from '../utils/queueRules';
+import { BarberAvatar } from '../components/BarberAvatar';
 import { 
   Check, 
   Sparkles, 
@@ -9,10 +10,12 @@ import {
   Phone, 
   Clock, 
   AlertCircle, 
-  CheckCircle2, 
-  ShieldCheck, 
+  Scissors, 
+  Zap, 
+  ChevronRight,
+  Flame,
   Coffee,
-  ChevronRight
+  CheckCircle2
 } from 'lucide-react';
 
 export const JoinQueue: React.FC = () => {
@@ -40,7 +43,6 @@ export const JoinQueue: React.FC = () => {
     const duration = selected.reduce((sum, s) => sum + s.durationMinutes, 0);
     const price = selected.reduce((sum, s) => sum + s.price, 0);
 
-    // Calculate dynamic wait time for a new customer joining with this barber preference
     const wait = calculateEstimatedWaitTime(
       state.queue,
       null,
@@ -78,19 +80,16 @@ export const JoinQueue: React.FC = () => {
     setErrorMessage(null);
     setDuplicateAlert(null);
 
-    // Validate Name
     if (!name.trim()) {
       setErrorMessage(t('nameValidationRequired'));
       return;
     }
 
-    // Validate 10-digit Phone
     if (!isValidPhoneNumber(phone)) {
       setErrorMessage(t('phoneValidationRequired'));
       return;
     }
 
-    // Validate Services (1 - 3)
     if (selectedServiceIds.length === 0) {
       setErrorMessage(t('serviceValidationRequired'));
       return;
@@ -104,7 +103,6 @@ export const JoinQueue: React.FC = () => {
     });
 
     if (result.isExisting) {
-      // Test checklist #2: Same phone joins twice -> shown existing spot, no duplicate
       setDuplicateAlert(t('alreadyInQueueAlert'));
       setTimeout(() => {
         navigate(`/status/${result.customer.id}`);
@@ -112,26 +110,28 @@ export const JoinQueue: React.FC = () => {
       return;
     }
 
-    // Successfully joined -> navigate to My Status
     navigate(`/status/${result.customer.id}`);
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8 space-y-6">
+    <div className="max-w-2xl mx-auto px-4 py-6 sm:py-10 space-y-8">
       
       {/* Title & Subtitle */}
       <div className="text-center space-y-2">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+        <span className="text-xs font-bold uppercase tracking-widest text-gold-400">
+          Fast Digital Check-in
+        </span>
+        <h1 className="text-3xl sm:text-4xl font-black text-white font-serif">
           {t('joinQueueTitle')}
         </h1>
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-gray-400 max-w-md mx-auto">
           {t('joinQueueSubtitle')}
         </p>
       </div>
 
       {/* Duplicate alert if re-joining */}
       {duplicateAlert && (
-        <div className="p-4 rounded-2xl bg-amber-950/60 border border-amber-500/80 text-amber-200 flex items-center space-x-3 animate-pulse">
+        <div className="p-4 rounded-2xl bg-amber-950/70 border border-amber-500 text-amber-200 flex items-center space-x-3 animate-pulse shadow-lg">
           <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0" />
           <span className="text-sm font-semibold">{duplicateAlert}</span>
         </div>
@@ -139,7 +139,7 @@ export const JoinQueue: React.FC = () => {
 
       {/* Validation Error banner */}
       {errorMessage && (
-        <div className="p-4 rounded-2xl bg-rose-950/60 border border-rose-500/80 text-rose-200 flex items-center space-x-3">
+        <div className="p-4 rounded-2xl bg-rose-950/70 border border-rose-500 text-rose-200 flex items-center space-x-3 shadow-lg">
           <AlertCircle className="w-5 h-5 text-rose-400 flex-shrink-0" />
           <span className="text-sm font-semibold">{errorMessage}</span>
         </div>
@@ -147,62 +147,58 @@ export const JoinQueue: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         
-        {/* Step 1: Contact Details */}
-        <div className="bg-charcoal-900 border border-charcoal-800 rounded-3xl p-5 sm:p-6 space-y-4 shadow-md">
-          <div className="flex items-center space-x-2 text-gold-400 font-bold text-sm sm:text-base border-b border-charcoal-800 pb-3">
+        {/* Step 1: Customer Details */}
+        <div className="glass-panel rounded-3xl p-6 space-y-4 shadow-xl">
+          <div className="flex items-center space-x-2.5 text-gold-400 font-bold text-sm sm:text-base border-b border-charcoal-800 pb-3">
             <User className="w-4 h-4" />
             <span>{t('step1Title')}</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
                 {t('fullNameLabel')} <span className="text-gold-400">*</span>
               </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder={t('fullNamePlaceholder')}
-                  required
-                  className="touch-target w-full px-4 py-3 rounded-xl bg-charcoal-800 border border-charcoal-700 text-white placeholder-gray-500 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 text-sm"
-                />
-              </div>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder={t('fullNamePlaceholder')}
+                required
+                className="touch-target w-full px-4 py-3.5 rounded-2xl bg-charcoal-900 border border-charcoal-700/80 text-white placeholder-gray-500 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 text-sm font-medium transition-colors"
+              />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">
                 {t('phoneLabel')} <span className="text-gold-400">*</span>
               </label>
-              <div className="relative">
-                <input
-                  type="tel"
-                  maxLength={10}
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
-                  placeholder={t('phonePlaceholder')}
-                  required
-                  className="touch-target w-full px-4 py-3 rounded-xl bg-charcoal-800 border border-charcoal-700 text-white placeholder-gray-500 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 text-sm tracking-wider"
-                />
-              </div>
+              <input
+                type="tel"
+                maxLength={10}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                placeholder={t('phonePlaceholder')}
+                required
+                className="touch-target w-full px-4 py-3.5 rounded-2xl bg-charcoal-900 border border-charcoal-700/80 text-white placeholder-gray-500 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 text-sm font-mono tracking-wider transition-colors"
+              />
             </div>
           </div>
         </div>
 
         {/* Step 2: Service Selection (Multi-select, Max 3) */}
-        <div className="bg-charcoal-900 border border-charcoal-800 rounded-3xl p-5 sm:p-6 space-y-4 shadow-md">
+        <div className="glass-panel rounded-3xl p-6 space-y-4 shadow-xl">
           <div className="flex items-center justify-between border-b border-charcoal-800 pb-3">
-            <div className="flex items-center space-x-2 text-gold-400 font-bold text-sm sm:text-base">
+            <div className="flex items-center space-x-2.5 text-gold-400 font-bold text-sm sm:text-base">
               <Sparkles className="w-4 h-4" />
               <span>{t('step2Title')}</span>
             </div>
-            <span className="text-xs text-gray-400 bg-charcoal-800 px-2.5 py-1 rounded-full border border-charcoal-700">
+            <span className="text-xs font-bold text-gold-400 bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/30">
               {selectedServiceIds.length}/3 selected
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             {activeServices.map((service) => {
               const isSelected = selectedServiceIds.includes(service.id);
               const displayName = service.name[language] || service.name.en;
@@ -211,14 +207,14 @@ export const JoinQueue: React.FC = () => {
                 <div
                   key={service.id}
                   onClick={() => handleToggleService(service.id)}
-                  className={`touch-target cursor-pointer p-4 rounded-2xl border transition-all duration-150 flex items-center justify-between ${
+                  className={`touch-target cursor-pointer p-4 rounded-2xl border transition-all duration-200 flex items-center justify-between group ${
                     isSelected
-                      ? 'bg-gold-500/10 border-gold-500 text-white shadow-sm shadow-gold-500/10'
-                      : 'bg-charcoal-800/70 border-charcoal-700/70 text-gray-300 hover:border-gray-600'
+                      ? 'bg-gold-500/15 border-gold-500 text-white shadow-lg shadow-gold-500/15 scale-[1.01]'
+                      : 'bg-charcoal-900/90 border-charcoal-700/80 text-gray-300 hover:border-charcoal-600'
                   }`}
                 >
-                  <div className="space-y-1 pr-2">
-                    <div className="font-semibold text-sm sm:text-base leading-snug">
+                  <div className="space-y-1.5 pr-2">
+                    <div className="font-bold text-sm sm:text-base leading-snug">
                       {displayName}
                     </div>
                     <div className="flex items-center space-x-3 text-xs text-gray-400">
@@ -226,18 +222,18 @@ export const JoinQueue: React.FC = () => {
                         <Clock className="w-3.5 h-3.5 mr-1 text-gold-400" />
                         {service.durationMinutes} {t('minutes')}
                       </span>
-                      <span className="font-bold text-gold-400">
+                      <span className="font-extrabold text-gold-400 font-mono text-sm">
                         ₹{service.price}
                       </span>
                     </div>
                   </div>
 
-                  <div className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 border ${
+                  <div className={`w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 border transition-colors ${
                     isSelected 
-                      ? 'gold-gradient-bg border-gold-400 text-charcoal-950 font-bold' 
-                      : 'border-charcoal-600 bg-charcoal-900'
+                      ? 'gold-gradient-bg border-gold-400 text-charcoal-950 font-bold shadow' 
+                      : 'border-charcoal-600 bg-charcoal-950 text-transparent'
                   }`}>
-                    {isSelected && <Check className="w-4 h-4" />}
+                    <Check className="w-4 h-4 stroke-[3]" />
                   </div>
                 </div>
               );
@@ -245,28 +241,28 @@ export const JoinQueue: React.FC = () => {
           </div>
         </div>
 
-        {/* Step 3: Barber Picker */}
-        <div className="bg-charcoal-900 border border-charcoal-800 rounded-3xl p-5 sm:p-6 space-y-4 shadow-md">
-          <div className="flex items-center space-x-2 text-gold-400 font-bold text-sm sm:text-base border-b border-charcoal-800 pb-3">
+        {/* Step 3: Barber Picker with Real Vector Avatars */}
+        <div className="glass-panel rounded-3xl p-6 space-y-4 shadow-xl">
+          <div className="flex items-center space-x-2.5 text-gold-400 font-bold text-sm sm:text-base border-b border-charcoal-800 pb-3">
             <User className="w-4 h-4" />
             <span>{t('step3Title')}</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {/* Any Barber (Fastest) Option */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            {/* Any Barber (Fastest) */}
             <div
               onClick={() => setSelectedBarberId('any')}
-              className={`touch-target cursor-pointer p-4 rounded-2xl border transition-all duration-150 flex items-center space-x-3 sm:col-span-2 ${
+              className={`touch-target cursor-pointer p-4 rounded-2xl border transition-all duration-200 flex items-center space-x-3.5 sm:col-span-2 ${
                 selectedBarberId === 'any'
-                  ? 'bg-gold-500/15 border-gold-500 text-white'
-                  : 'bg-charcoal-800/70 border-charcoal-700/70 text-gray-300 hover:border-gray-600'
+                  ? 'bg-gold-500/15 border-gold-500 text-white shadow-lg shadow-gold-500/15'
+                  : 'bg-charcoal-900/90 border-charcoal-700/80 text-gray-300 hover:border-charcoal-600'
               }`}
             >
-              <div className="w-10 h-10 rounded-xl gold-gradient-bg flex items-center justify-center text-charcoal-950 font-bold flex-shrink-0">
-                ⚡
+              <div className="w-12 h-12 rounded-2xl gold-gradient-bg flex items-center justify-center text-charcoal-950 font-bold shadow-md shadow-gold-500/20 flex-shrink-0">
+                <Zap className="w-6 h-6 fill-current" />
               </div>
               <div className="flex-1">
-                <div className="font-bold text-sm sm:text-base">{t('anyBarber')}</div>
+                <div className="font-bold text-sm sm:text-base text-white">{t('anyBarber')}</div>
                 <div className="text-xs text-gray-400">{t('anyBarberDesc')}</div>
               </div>
               <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
@@ -279,33 +275,38 @@ export const JoinQueue: React.FC = () => {
             {/* Individual Barbers */}
             {state.barbers.filter(b => b.isOnDuty).map((barber) => {
               const isSelected = selectedBarberId === barber.id;
+              const isBusy = !!barber.currentCustomerId;
 
               return (
                 <div
                   key={barber.id}
                   onClick={() => setSelectedBarberId(barber.id)}
-                  className={`touch-target cursor-pointer p-3.5 rounded-2xl border transition-all duration-150 flex items-center space-x-3 ${
+                  className={`touch-target cursor-pointer p-3.5 rounded-2xl border transition-all duration-200 flex items-center space-x-3.5 ${
                     isSelected
-                      ? 'bg-gold-500/15 border-gold-500 text-white'
-                      : 'bg-charcoal-800/70 border-charcoal-700/70 text-gray-300 hover:border-gray-600'
+                      ? 'bg-gold-500/15 border-gold-500 text-white shadow-md shadow-gold-500/15'
+                      : 'bg-charcoal-900/90 border-charcoal-700/80 text-gray-300 hover:border-charcoal-600'
                   }`}
                 >
-                  <img
-                    src={barber.avatar}
-                    alt={barber.name}
-                    className="w-11 h-11 rounded-full object-cover border border-charcoal-600 flex-shrink-0"
+                  <BarberAvatar
+                    barberId={barber.id}
+                    name={barber.name}
+                    size="md"
+                    showStatus
+                    isOnDuty={barber.isOnDuty}
+                    isOnBreak={barber.isOnBreak}
+                    isBusy={isBusy}
                   />
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-sm truncate">{barber.name}</div>
+                    <div className="font-bold text-sm truncate">{barber.name}</div>
                     {barber.isOnBreak ? (
                       <span className="inline-flex items-center text-xs text-amber-400 font-medium">
                         <Coffee className="w-3 h-3 mr-1" />
                         {t('barberIsOnBreakMsg')}
                       </span>
                     ) : (
-                      <span className="text-xs text-emerald-400 font-medium flex items-center">
+                      <span className="text-xs text-emerald-400 font-semibold flex items-center">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5" />
-                        {barber.currentCustomerId ? t('busy') : t('free')}
+                        {isBusy ? t('busy') : t('free')}
                       </span>
                     )}
                   </div>
@@ -320,40 +321,40 @@ export const JoinQueue: React.FC = () => {
           </div>
         </div>
 
-        {/* Step 4: Live Summary Footer Card */}
-        <div className="bg-charcoal-900 border border-gold-500/40 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl gold-border-glow">
-          <div className="text-xs uppercase font-bold tracking-wider text-gold-400">
+        {/* Step 4: Summary Card */}
+        <div className="glass-panel-gold rounded-3xl p-6 space-y-5 shadow-2xl">
+          <div className="text-xs uppercase font-extrabold tracking-widest text-gold-400">
             {t('liveSummary')}
           </div>
 
-          <div className="grid grid-cols-3 gap-2 text-center py-2 border-y border-charcoal-800">
+          <div className="grid grid-cols-3 gap-2 text-center py-3 border-y border-charcoal-800/80">
             <div>
-              <div className="text-xs text-gray-400">{t('totalServiceDuration')}</div>
-              <div className="text-lg sm:text-xl font-bold text-white mt-1">
-                {totalDuration} {t('minutes')}
+              <div className="text-xs text-gray-400 font-medium">{t('totalServiceDuration')}</div>
+              <div className="text-lg sm:text-2xl font-black text-white mt-1 font-mono">
+                {totalDuration} <span className="text-xs font-sans text-gray-400">{t('minutes')}</span>
               </div>
             </div>
-            <div className="border-x border-charcoal-800">
-              <div className="text-xs text-gray-400">{t('totalPrice')}</div>
-              <div className="text-lg sm:text-xl font-bold text-gold-400 mt-1">
+            <div className="border-x border-charcoal-800/80">
+              <div className="text-xs text-gray-400 font-medium">{t('totalPrice')}</div>
+              <div className="text-lg sm:text-2xl font-black text-gold-400 mt-1 font-mono">
                 ₹{totalPrice}
               </div>
             </div>
             <div>
-              <div className="text-xs text-gray-400">{t('estimatedWaitTime')}</div>
-              <div className="text-lg sm:text-xl font-bold text-white mt-1">
-                ~{expectedWait} {t('minutes')}
+              <div className="text-xs text-gray-400 font-medium">{t('estimatedWaitTime')}</div>
+              <div className="text-lg sm:text-2xl font-black text-white mt-1 font-mono">
+                ~{expectedWait} <span className="text-xs font-sans text-gray-400">{t('minutes')}</span>
               </div>
             </div>
           </div>
 
-          {/* Confirm Button (Minimum 44px) */}
+          {/* Confirm Button */}
           <button
             type="submit"
-            className="touch-target w-full py-4 px-6 rounded-2xl gold-gradient-bg text-charcoal-950 font-bold text-base sm:text-lg shadow-lg hover:brightness-105 active:scale-[0.99] transition-all duration-150 flex items-center justify-center space-x-2"
+            className="touch-target w-full py-4 sm:py-5 px-6 rounded-2xl gold-gradient-bg text-charcoal-950 font-black text-base sm:text-lg shadow-xl shadow-gold-500/20 hover:brightness-110 active:scale-[0.99] transition-all flex items-center justify-center space-x-2"
           >
             <span>{t('confirmSpotButton')}</span>
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-5 h-5 stroke-[3]" />
           </button>
         </div>
 

@@ -4,8 +4,9 @@ import { initialSalonState } from '../data/initialData';
 import { translations, Language } from '../translations';
 import { findActiveCustomerByPhone, findNextCustomerForBarber, formatToken } from '../utils/queueRules';
 import { playChimeSound, triggerVibration } from '../utils/audio';
+import { getBarberAvatar } from '../data/avatars';
 
-const STORAGE_KEY = 'salon_queue_state_v1';
+const STORAGE_KEY = 'salon_queue_state_v2';
 const LANG_STORAGE_KEY = 'salon_queue_lang_v1';
 const CHANNEL_NAME = 'salon_queue_sync_channel';
 
@@ -45,9 +46,17 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [state, setState] = useState<SalonState>(() => {
     if (typeof window !== 'undefined') {
       try {
-        const saved = localStorage.getItem(STORAGE_KEY);
+        const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('salon_queue_state_v1');
         if (saved) {
-          return JSON.parse(saved);
+          const parsed = JSON.parse(saved) as SalonState;
+          // Ensure all barbers use reliable offline avatars
+          if (parsed.barbers) {
+            parsed.barbers = parsed.barbers.map(b => ({
+              ...b,
+              avatar: getBarberAvatar(b.id),
+            }));
+          }
+          return parsed;
         }
       } catch (e) {
         console.error("Failed to load salon state from storage:", e);
