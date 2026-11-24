@@ -1,6 +1,6 @@
 # Salon Queue Management System
 
-**Live demo:** https://salon-queue-royalblend.vercel.app  
+**Live demo:** https://salon-queue-kappa.vercel.app/  
 **Hosted on:** Vercel (frontend)  
 **Test PIN for reception/barber screens:** `1234`
 

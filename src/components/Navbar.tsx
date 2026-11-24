@@ -19,15 +19,15 @@ export const Navbar: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-charcoal-950/90 backdrop-blur-xl border-b border-charcoal-800/80 shadow-2xl">
+    <header className="sticky top-0 z-40 bg-maroon-950/95 backdrop-blur-xl border-b border-maroon-800/80 shadow-2xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           
-          {/* Logo & Luxury Brand Title */}
+          {/* Logo & Brand Emblem */}
           <Link to="/" className="flex items-center space-x-3.5 group">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl gold-gradient-bg p-0.5 shadow-lg shadow-gold-500/25 group-hover:scale-105 transition-all duration-300">
-              <div className="w-full h-full bg-charcoal-950 rounded-[14px] flex items-center justify-center">
-                <Scissors className="w-5 h-5 sm:w-6 sm:h-6 text-gold-400 font-bold transform -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl gold-gradient-bg p-0.5 shadow-lg shadow-maroon-950 group-hover:scale-105 transition-all duration-300">
+              <div className="w-full h-full bg-maroon-950 rounded-[14px] flex items-center justify-center">
+                <Scissors className="w-5 h-5 sm:w-6 sm:h-6 text-beige-300 font-bold transform -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
               </div>
             </div>
             <div>
@@ -35,12 +35,12 @@ export const Navbar: React.FC = () => {
                 <span className="text-lg sm:text-2xl font-black tracking-tight gold-gradient-text font-serif">
                   {t('salonName')}
                 </span>
-                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-gold-500/10 text-gold-400 border border-gold-500/30">
-                  <Sparkles className="w-2.5 h-2.5 mr-1" />
-                  PREMIUM
+                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-maroon-850 text-beige-300 border border-beige-300/40 tracking-wider">
+                  <Sparkles className="w-2.5 h-2.5 mr-1 text-beige-300" />
+                  MAISON
                 </span>
               </div>
-              <span className="text-xs text-gray-400 font-medium tracking-wide hidden sm:block">
+              <span className="text-xs text-beige-200/70 font-medium tracking-wide hidden sm:block">
                 {t('salonTagline')}
               </span>
             </div>
@@ -51,22 +51,22 @@ export const Navbar: React.FC = () => {
             {/* Live Open / Closed Badge */}
             <div className={`flex items-center px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
               state.isOnlineQueueOpen 
-                ? 'bg-emerald-950/60 text-emerald-300 border-emerald-800/80 shadow-sm shadow-emerald-500/10' 
-                : 'bg-amber-950/60 text-amber-300 border-amber-800/80 shadow-sm shadow-amber-500/10'
+                ? 'bg-emerald-950/70 text-emerald-300 border-emerald-700/80 shadow-sm' 
+                : 'bg-amber-950/70 text-amber-300 border-amber-700/80 shadow-sm'
             }`}>
               <span className={`w-2 h-2 rounded-full mr-2 ${state.isOnlineQueueOpen ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
               <span className="hidden xs:inline">{state.isOnlineQueueOpen ? t('openBadge') : t('closedBadge')}</span>
               <span className="xs:hidden">{state.isOnlineQueueOpen ? 'OPEN' : 'CLOSED'}</span>
             </div>
 
-            {/* Language Toggle Button (44px target) */}
+            {/* Language Toggle Button */}
             <button
               onClick={toggleLanguage}
-              className="touch-target inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-charcoal-900 hover:bg-charcoal-800 text-gold-400 hover:text-gold-300 border border-charcoal-700/80 hover:border-gold-500/40 font-semibold text-xs sm:text-sm transition-all duration-200 shadow-sm"
+              className="touch-target inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-maroon-900 hover:bg-maroon-850 text-beige-200 hover:text-white border border-maroon-700 hover:border-beige-300/60 font-semibold text-xs sm:text-sm transition-all duration-200 shadow-sm"
               title="Toggle English / Gujarati"
               aria-label="Switch Language"
             >
-              <Globe className="w-4 h-4 text-gold-400" />
+              <Globe className="w-4 h-4 text-beige-300" />
               <span>{t('switchLanguage')}</span>
             </button>
           </div>
@@ -74,7 +74,7 @@ export const Navbar: React.FC = () => {
 
         {/* Sub-bar: Screen & Device Navigation Tabs */}
         {!isTvDisplay && (
-          <nav className="flex space-x-1.5 overflow-x-auto py-2.5 border-t border-charcoal-800/60 text-xs sm:text-sm scrollbar-none" aria-label="Tabs">
+          <nav className="flex space-x-1.5 overflow-x-auto py-2.5 border-t border-maroon-800/60 text-xs sm:text-sm scrollbar-none" aria-label="Tabs">
             {navLinks.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.to || 
@@ -84,13 +84,13 @@ export const Navbar: React.FC = () => {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`touch-target flex items-center space-x-2 px-3.5 py-2 rounded-xl font-medium whitespace-nowrap transition-all duration-200 ${
+                  className={`touch-target flex items-center space-x-2 px-3.5 py-2 rounded-xl font-semibold whitespace-nowrap transition-all duration-200 ${
                     isActive
-                      ? 'gold-gradient-bg text-charcoal-950 font-bold shadow-md shadow-gold-500/20 scale-[1.02]'
-                      : 'text-gray-400 hover:text-gray-200 hover:bg-charcoal-900 border border-transparent hover:border-charcoal-700/50'
+                      ? 'gold-gradient-bg text-maroon-950 font-black shadow-lg shadow-maroon-950/60 scale-[1.02]'
+                      : 'text-beige-200/75 hover:text-beige-50 hover:bg-maroon-900 border border-transparent hover:border-maroon-700/70'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-charcoal-950' : 'text-gray-400'}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-maroon-950' : 'text-beige-300/70'}`} />
                   <span>{item.label}</span>
                 </Link>
               );

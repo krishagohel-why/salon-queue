@@ -14,9 +14,7 @@ import {
   X, 
   Scissors, 
   ChevronRight,
-  BellRing,
-  ShieldCheck,
-  Phone
+  BellRing
 } from 'lucide-react';
 
 export const MyStatus: React.FC = () => {
@@ -32,16 +30,16 @@ export const MyStatus: React.FC = () => {
   if (!customer) {
     return (
       <div className="max-w-md mx-auto px-4 py-16 text-center space-y-4">
-        <div className="w-16 h-16 rounded-full bg-charcoal-800 flex items-center justify-center mx-auto text-gray-500">
+        <div className="w-16 h-16 rounded-full bg-maroon-900 border border-maroon-750 flex items-center justify-center mx-auto text-beige-300/60">
           <Scissors className="w-8 h-8" />
         </div>
-        <h2 className="text-xl font-bold text-white font-serif">Ticket Not Found</h2>
-        <p className="text-sm text-gray-400">
+        <h2 className="text-xl font-bold text-beige-50 font-serif">Ticket Not Found</h2>
+        <p className="text-sm text-beige-200/70">
           This queue ticket may have expired, or was completed or removed.
         </p>
         <Link
           to="/"
-          className="touch-target inline-flex items-center justify-center px-6 py-3 rounded-xl gold-gradient-bg text-charcoal-950 font-bold text-sm"
+          className="touch-target inline-flex items-center justify-center px-6 py-3 rounded-xl gold-gradient-bg text-maroon-950 font-bold text-sm"
         >
           {t('home')}
         </Link>
@@ -65,7 +63,7 @@ export const MyStatus: React.FC = () => {
           particleCount: 100,
           spread: 80,
           origin: { y: 0.6 },
-          colors: ['#FACC15', '#D4A017', '#FFFFFF', '#FEF08A']
+          colors: ['#F4ECE1', '#DFC8A9', '#B08655', '#FFFFFF', '#681630']
         });
       } catch {
         // ignore
@@ -78,44 +76,44 @@ export const MyStatus: React.FC = () => {
     setShowCancelModal(false);
   };
 
-  // FULL-SCREEN CELEBRATORY GOLD ALERT WHEN CALLED
+  // FULL-SCREEN CELEBRATORY CHAMPAGNE BEIGE ALERT WHEN CALLED
   if (customer.status === 'called') {
     return (
-      <div className="fixed inset-0 z-50 gold-gradient-bg text-charcoal-950 flex flex-col items-center justify-center p-6 text-center animate-pulse-fast select-none">
+      <div className="fixed inset-0 z-50 gold-gradient-bg text-maroon-950 flex flex-col items-center justify-center p-6 text-center animate-pulse-fast select-none">
         <div className="max-w-md w-full space-y-6">
-          <div className="w-24 h-24 rounded-3xl bg-charcoal-950 text-gold-400 flex items-center justify-center mx-auto shadow-2xl animate-bounce border-2 border-gold-300">
+          <div className="w-24 h-24 rounded-3xl bg-maroon-950 text-beige-200 flex items-center justify-center mx-auto shadow-2xl animate-bounce border-2 border-beige-200">
             <BellRing className="w-12 h-12 stroke-[2.5]" />
           </div>
 
           <div className="space-y-2">
-            <span className="text-xs font-black uppercase tracking-widest bg-charcoal-950 text-gold-400 px-5 py-2 rounded-full inline-block shadow-md">
+            <span className="text-xs font-black uppercase tracking-widest bg-maroon-950 text-beige-200 px-5 py-2 rounded-full inline-block shadow-md">
               {t('yourToken')} {customer.token}
             </span>
-            <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-none text-charcoal-950 font-serif">
+            <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-none text-maroon-950 font-serif">
               {t('itsYourTurnTitle')}
             </h1>
-            <p className="text-base sm:text-lg font-bold text-charcoal-900">
+            <p className="text-base sm:text-lg font-bold text-maroon-900">
               {t('itsYourTurnSubtitle')}
             </p>
           </div>
 
           {assignedBarber && (
-            <div className="p-5 rounded-3xl bg-charcoal-950 text-white flex items-center justify-center space-x-4 shadow-2xl border border-gold-400/50">
+            <div className="p-5 rounded-3xl bg-maroon-950 text-white flex items-center justify-center space-x-4 shadow-2xl border border-beige-300/50">
               <BarberAvatar
                 barberId={assignedBarber.id}
                 name={assignedBarber.name}
                 size="lg"
               />
               <div className="text-left">
-                <span className="text-xs text-gold-400 uppercase font-bold tracking-wider">{t('assignedBarber')}</span>
-                <div className="text-xl font-black font-serif">{assignedBarber.name}</div>
+                <span className="text-xs text-beige-300 uppercase font-bold tracking-wider">{t('assignedBarber')}</span>
+                <div className="text-xl font-black font-serif text-beige-50">{assignedBarber.name}</div>
               </div>
             </div>
           )}
 
           <div className="pt-2">
-            <p className="text-sm font-bold text-charcoal-900/90 bg-white/30 backdrop-blur-sm px-4 py-2 rounded-full inline-block">
-              ✨ Station is sanitized and ready for you right now
+            <p className="text-sm font-bold text-maroon-950 bg-white/40 backdrop-blur-sm px-4 py-2 rounded-full inline-block">
+              ✨ Station is prepared and waiting for you right now
             </p>
           </div>
         </div>
@@ -128,7 +126,7 @@ export const MyStatus: React.FC = () => {
       
       {/* Alert when 2nd in line: "Start coming to the salon" */}
       {position === 2 && customer.status === 'waiting' && (
-        <div className="p-4 rounded-3xl bg-amber-500 text-charcoal-950 font-black shadow-xl flex items-center space-x-3.5 animate-pulse">
+        <div className="p-4 rounded-3xl bg-amber-500 text-maroon-950 font-black shadow-xl flex items-center space-x-3.5 animate-pulse">
           <BellRing className="w-6 h-6 flex-shrink-0" />
           <div className="text-sm sm:text-base leading-snug">
             {t('youAreNextBanner')}
@@ -138,11 +136,11 @@ export const MyStatus: React.FC = () => {
 
       {/* In-Chair or Completed States */}
       {customer.status === 'in_chair' && (
-        <div className="p-5 rounded-3xl bg-emerald-950/80 border border-emerald-500 text-emerald-200 text-center space-y-2 shadow-xl">
+        <div className="p-5 rounded-3xl bg-maroon-900 border border-emerald-500 text-emerald-200 text-center space-y-2 shadow-xl">
           <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
           <div className="text-lg font-black text-white font-serif">{t('inChairStatus')}</div>
           {assignedBarber && (
-            <p className="text-xs sm:text-sm text-emerald-300">
+            <p className="text-xs sm:text-sm text-beige-200">
               Serving with <span className="font-bold">{assignedBarber.name}</span>
             </p>
           )}
@@ -150,12 +148,12 @@ export const MyStatus: React.FC = () => {
       )}
 
       {customer.status === 'done' && (
-        <div className="glass-panel-gold rounded-3xl p-6 text-center space-y-4 shadow-2xl">
-          <CheckCircle2 className="w-14 h-14 text-gold-400 mx-auto" />
-          <h2 className="text-xl sm:text-2xl font-black text-white font-serif">{t('completedStatus')}</h2>
+        <div className="glass-panel-beige rounded-3xl p-6 text-center space-y-4 shadow-2xl">
+          <CheckCircle2 className="w-14 h-14 text-beige-300 mx-auto" />
+          <h2 className="text-xl sm:text-2xl font-black text-beige-50 font-serif">{t('completedStatus')}</h2>
           <Link
             to="/"
-            className="touch-target inline-flex items-center px-6 py-3 rounded-2xl gold-gradient-bg text-charcoal-950 font-black text-sm shadow-md"
+            className="touch-target inline-flex items-center px-6 py-3 rounded-2xl gold-gradient-bg text-maroon-950 font-black text-sm shadow-md"
           >
             {t('home')}
           </Link>
@@ -163,32 +161,32 @@ export const MyStatus: React.FC = () => {
       )}
 
       {customer.status === 'no_show' && (
-        <div className="p-5 rounded-3xl bg-rose-950/80 border border-rose-500 text-rose-200 text-center space-y-2 shadow-xl">
+        <div className="p-5 rounded-3xl bg-maroon-900 border border-rose-500 text-rose-200 text-center space-y-2 shadow-xl">
           <AlertTriangle className="w-10 h-10 text-rose-400 mx-auto" />
           <div className="text-base font-bold text-white font-serif">{t('noShowStatus')}</div>
         </div>
       )}
 
       {customer.status === 'cancelled' && (
-        <div className="glass-panel rounded-3xl p-6 text-gray-400 text-center space-y-2">
-          <X className="w-10 h-10 text-gray-500 mx-auto" />
+        <div className="glass-panel rounded-3xl p-6 text-beige-200/60 text-center space-y-2">
+          <X className="w-10 h-10 text-beige-300/40 mx-auto" />
           <div className="text-base font-bold text-white font-serif">{t('cancelledStatus')}</div>
         </div>
       )}
 
       {/* Main Luxury Digital Ticket */}
-      <div className="glass-panel-gold rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="glass-panel-beige rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-beige-300/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Large Token Header */}
-        <div className="text-center space-y-1 pb-4 border-b border-charcoal-800">
-          <span className="text-xs uppercase font-extrabold tracking-widest text-gold-400">
+        <div className="text-center space-y-1 pb-4 border-b border-maroon-800">
+          <span className="text-xs uppercase font-extrabold tracking-widest text-beige-300">
             {t('yourToken')}
           </span>
-          <div className="text-6xl font-black text-white tracking-wider font-mono">
+          <div className="text-6xl font-black text-beige-50 tracking-wider font-mono">
             {customer.token}
           </div>
-          <div className="text-sm font-bold text-gray-300">
+          <div className="text-sm font-bold text-beige-200">
             {customer.name}
           </div>
         </div>
@@ -197,27 +195,27 @@ export const MyStatus: React.FC = () => {
         {customer.status === 'waiting' && (
           <div className="flex flex-col items-center justify-center py-2">
             <div className="relative w-44 h-44 flex items-center justify-center">
-              <div className="absolute inset-0 rounded-full border-4 border-charcoal-800" />
-              <div className="absolute inset-0 rounded-full border-4 border-gold-500 border-t-transparent animate-spin" style={{ animationDuration: '8s' }} />
+              <div className="absolute inset-0 rounded-full border-4 border-maroon-800" />
+              <div className="absolute inset-0 rounded-full border-4 border-beige-300 border-t-transparent animate-spin" style={{ animationDuration: '8s' }} />
               
               <div className="text-center space-y-0.5 z-10 px-4">
-                <Clock className="w-6 h-6 text-gold-400 mx-auto mb-1 animate-pulse" />
-                <div className="text-3xl font-black text-white font-mono">
+                <Clock className="w-6 h-6 text-beige-300 mx-auto mb-1 animate-pulse" />
+                <div className="text-3xl font-black text-beige-50 font-mono">
                   ~{estimatedWait}
                 </div>
-                <div className="text-xs text-gold-400 uppercase font-black tracking-wider">
+                <div className="text-xs text-beige-300 uppercase font-black tracking-wider">
                   {t('minutes')}
                 </div>
-                <div className="text-[11px] text-gray-400 font-medium">
+                <div className="text-[11px] text-beige-200/70 font-medium">
                   {t('about')}
                 </div>
               </div>
             </div>
 
             {/* Position in line indicator */}
-            <div className="mt-4 inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-charcoal-900 border border-gold-500/30 text-sm font-bold text-gold-400 shadow-sm">
+            <div className="mt-4 inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-maroon-900 border border-beige-300/30 text-sm font-bold text-beige-300 shadow-sm">
               <span>{position === 1 ? 'Next in line!' : `${position}th in line`}</span>
-              <span className="text-gray-400 font-normal">
+              <span className="text-beige-200/70 font-normal">
                 ({position > 1 ? `${position - 1} ${t('peopleAhead')}` : 'prepare to step in'})
               </span>
             </div>
@@ -225,8 +223,8 @@ export const MyStatus: React.FC = () => {
         )}
 
         {/* Service Details & Stylist info */}
-        <div className="pt-4 border-t border-charcoal-800/80 space-y-3.5 text-xs sm:text-sm">
-          <div className="flex items-center justify-between text-gray-400">
+        <div className="pt-4 border-t border-maroon-800/80 space-y-3.5 text-xs sm:text-sm">
+          <div className="flex items-center justify-between text-beige-200/70">
             <span>{t('serviceDetails')}:</span>
             <span className="text-white font-semibold text-right max-w-[200px] truncate">
               {customer.serviceIds.map(id => {
@@ -236,16 +234,16 @@ export const MyStatus: React.FC = () => {
             </span>
           </div>
 
-          <div className="flex items-center justify-between text-gray-400">
+          <div className="flex items-center justify-between text-beige-200/70">
             <span>{t('barberCol')}:</span>
             <span className="text-white font-semibold">
               {customer.barberPreference === 'any' ? t('anyBarber') : (assignedBarber?.name || customer.barberPreference)}
             </span>
           </div>
 
-          <div className="flex items-center justify-between text-gray-400">
+          <div className="flex items-center justify-between text-beige-200/70">
             <span>{t('totalPrice')}:</span>
-            <span className="text-gold-400 font-black text-lg font-mono">
+            <span className="text-beige-200 font-black text-lg font-mono">
               ₹{customer.totalPrice}
             </span>
           </div>
@@ -256,7 +254,7 @@ export const MyStatus: React.FC = () => {
           <div className="pt-2">
             <button
               onClick={() => setShowCancelModal(true)}
-              className="touch-target w-full py-3 rounded-2xl bg-charcoal-900/80 hover:bg-rose-950/40 text-gray-400 hover:text-rose-300 border border-charcoal-800 hover:border-rose-800/60 text-xs sm:text-sm font-semibold transition-colors"
+              className="touch-target w-full py-3 rounded-2xl bg-maroon-900/80 hover:bg-rose-950/40 text-beige-200/70 hover:text-rose-300 border border-maroon-800 hover:border-rose-800/60 text-xs sm:text-sm font-semibold transition-colors"
             >
               {t('cancelSpotButton')}
             </button>
@@ -266,19 +264,19 @@ export const MyStatus: React.FC = () => {
 
       {/* Confirmation Modal for Spot Cancellation */}
       {showCancelModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="glass-panel-gold rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="glass-panel-beige rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
             <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto">
               <AlertTriangle className="w-6 h-6" />
             </div>
             <div className="text-center space-y-1">
               <h3 className="text-lg font-bold text-white font-serif">{t('confirmCancelTitle')}</h3>
-              <p className="text-xs text-gray-400 leading-snug">{t('confirmCancelDesc')}</p>
+              <p className="text-xs text-beige-200/70 leading-snug">{t('confirmCancelDesc')}</p>
             </div>
             <div className="grid grid-cols-2 gap-3 pt-2">
               <button
                 onClick={() => setShowCancelModal(false)}
-                className="touch-target py-3 rounded-xl bg-charcoal-800 text-gray-300 font-semibold text-xs sm:text-sm hover:bg-charcoal-700"
+                className="touch-target py-3 rounded-xl bg-maroon-850 text-beige-200 font-semibold text-xs sm:text-sm hover:bg-maroon-800"
               >
                 {t('keepMySpot')}
               </button>

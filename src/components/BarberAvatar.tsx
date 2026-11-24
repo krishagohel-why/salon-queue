@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { getBarberAvatar } from '../data/avatars';
-import { Coffee, Scissors, Users } from 'lucide-react';
 
 interface BarberAvatarProps {
   barberId: string;
@@ -44,7 +43,7 @@ export const BarberAvatar: React.FC<BarberAvatarProps> = ({
   return (
     <div className={`relative inline-flex items-center justify-center flex-shrink-0 ${className}`}>
       <div
-        className={`${sizeClasses[size]} rounded-2xl overflow-hidden bg-charcoal-900 border-2 border-gold-500/40 shadow-md shadow-gold-500/10 flex items-center justify-center transition-transform hover:scale-105`}
+        className={`${sizeClasses[size]} rounded-2xl overflow-hidden bg-maroon-900 border-2 border-beige-300/60 shadow-lg shadow-maroon-950/80 flex items-center justify-center transition-transform hover:scale-105`}
       >
         {!imageError ? (
           <img
@@ -55,7 +54,7 @@ export const BarberAvatar: React.FC<BarberAvatarProps> = ({
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-charcoal-800 to-charcoal-950 flex items-center justify-center font-extrabold text-gold-400">
+          <div className="w-full h-full bg-gradient-to-br from-maroon-800 to-maroon-950 flex items-center justify-center font-extrabold text-beige-300">
             {initials}
           </div>
         )}
@@ -64,11 +63,11 @@ export const BarberAvatar: React.FC<BarberAvatarProps> = ({
       {/* Real-time status dot indicator */}
       {showStatus && (
         <span
-          className={`absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-charcoal-950 ${
+          className={`absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-maroon-950 shadow-sm ${
             !isOnDuty
               ? 'bg-gray-500'
               : isOnBreak
-              ? 'bg-amber-400 text-charcoal-950'
+              ? 'bg-amber-400 text-maroon-950'
               : isBusy
               ? 'bg-rose-500'
               : 'bg-emerald-400'
@@ -83,7 +82,7 @@ export const BarberAvatar: React.FC<BarberAvatarProps> = ({
               : 'Available'
           }
         >
-          {isOnBreak && <span className="w-1.5 h-1.5 rounded-full bg-charcoal-950" />}
+          {isOnBreak && <span className="w-1.5 h-1.5 rounded-full bg-maroon-950" />}
           {isBusy && <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />}
         </span>
       )}
