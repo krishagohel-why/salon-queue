@@ -9,6 +9,23 @@ import { getBarberAvatar } from '../data/avatars';
 const STORAGE_KEY = 'salon_queue_state_v2';
 const LANG_STORAGE_KEY = 'salon_queue_lang_v1';
 const CHANNEL_NAME = 'salon_queue_sync_channel';
+const API_URL = ((import.meta as any).env?.VITE_API_URL as string) || '';
+
+// Helper for backend communication with silent offline resilience
+async function apiPost(endpoint: string, body: any) {
+  if (!API_URL) return null;
+  try {
+    const res = await fetch(`${API_URL.replace(/\/$/, '')}${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    return await res.json();
+  } catch (err) {
+    console.warn(`[Backend API] Endpoint ${endpoint} offline or unreachable, using client state fallback.`);
+    return null;
+  }
+}
 
 interface SalonContextType {
   state: SalonState;
@@ -73,9 +90,11 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return 'en';
   });
 
-  // Cross-Tab Broadcast Channel setup
+  // Cross-Tab Broadcast Channel & Backend WebSocket setup
   useEffect(() => {
     let channel: BroadcastChannel | null = null;
+    let ws: WebSocket | null = null;
+
     try {
       if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
         channel = new BroadcastChannel(CHANNEL_NAME);
@@ -93,6 +112,56 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       console.warn("BroadcastChannel not supported or restricted:", err);
     }
 
+    // Connect to Backend WebSocket if API_URL is configured
+    if (API_URL) {
+      try {
+        const wsUrl = API_URL.replace(/^http/, 'ws');
+        ws = new WebSocket(wsUrl);
+
+        ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data && data.type === 'SYNC_STATE' && data.payload) {
+              const serverState = data.payload;
+              if (serverState.barbers) {
+                serverState.barbers = serverState.barbers.map((b: Barber) => ({
+                  ...b,
+                  avatar: getBarberAvatar(b.id),
+                }));
+              }
+              setState(serverState);
+              if (data.hasChime) {
+                playChimeSound();
+                triggerVibration();
+              }
+            }
+          } catch (e) {
+            // ignore parse error
+          }
+        };
+      } catch (e) {
+        console.warn("WebSocket could not connect to backend, running in offline mode:", e);
+      }
+
+      // Initial state fetch from backend REST API
+      fetch(`${API_URL.replace(/\/$/, '')}/api/state`)
+        .then(res => res.json())
+        .then(serverState => {
+          if (serverState && serverState.queue) {
+            if (serverState.barbers) {
+              serverState.barbers = serverState.barbers.map((b: Barber) => ({
+                ...b,
+                avatar: getBarberAvatar(b.id),
+              }));
+            }
+            setState(serverState);
+          }
+        })
+        .catch(() => {
+          // fallback to localStorage/initial state silently
+        });
+    }
+
     // Storage event fallback for older browsers or cross-origin isolated contexts
     const handleStorage = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY && e.newValue) {
@@ -108,6 +177,7 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     return () => {
       if (channel) channel.close();
+      if (ws) ws.close();
       window.removeEventListener('storage', handleStorage);
     };
   }, []);
@@ -193,6 +263,7 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
 
     broadcastState(newState, false);
+    apiPost('/api/join', data);
     return { success: true, customer: newCustomer };
   }, [state, broadcastState]);
 
@@ -236,6 +307,7 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
 
     broadcastState(newState, false);
+    apiPost('/api/walk-in', data);
     return newCustomer;
   }, [state, broadcastState]);
 
@@ -265,6 +337,7 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     // Broadcast with chime = true so TV display and phones alert
     broadcastState(newState, true);
+    apiPost('/api/call-next', { barberId });
     return { ...customer, status: 'called', assignedBarberId: barberId };
   }, [state, broadcastState]);
 
@@ -300,6 +373,7 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
 
     broadcastState(newState, false);
+    apiPost('/api/service/start', { barberId, customerId });
   }, [state, broadcastState]);
 
   // Barber completes service (Test checklist #5 & #9)
@@ -333,6 +407,7 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
 
     broadcastState(newState, false);
+    apiPost('/api/service/done', { barberId, customerId });
   }, [state, broadcastState]);
 
   // Reception marks customer No-Show (Test checklist #6)
@@ -369,6 +444,7 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
 
     broadcastState(newState, false);
+    apiPost('/api/customer/no-show', { customerId });
   }, [state, broadcastState]);
 
   // Cancel Customer spot
@@ -401,6 +477,7 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
 
     broadcastState(newState, false);
+    apiPost('/api/customer/cancel', { customerId });
   }, [state, broadcastState]);
 
   // Barber breaks toggle
@@ -421,6 +498,7 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
 
     broadcastState(newState, false);
+    apiPost('/api/barber/break', { barberId });
   }, [state, broadcastState]);
 
   // Barber duty toggle
@@ -441,6 +519,7 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
 
     broadcastState(newState, false);
+    apiPost('/api/barber/duty', { barberId });
   }, [state, broadcastState]);
 
   // Toggle online queue (Test checklist #7)
@@ -451,6 +530,7 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
 
     broadcastState(newState, false);
+    apiPost('/api/queue/toggle', {});
   }, [state, broadcastState]);
 
   // Update service in catalog
@@ -468,11 +548,13 @@ export const SalonProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
 
     broadcastState(newState, false);
+    apiPost('/api/services/update', { serviceId, updates });
   }, [state, broadcastState]);
 
   // Reset to initial demo state
   const resetToDemo = useCallback(() => {
     broadcastState(initialSalonState, false);
+    apiPost('/api/reset', {});
   }, [broadcastState]);
 
   return (

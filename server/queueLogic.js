@@ -1,0 +1,262 @@
+// Queue logic and state management for Node/Express Backend
+
+export const initialBarbers = [
+  {
+    id: 'ravi',
+    name: 'Ravi Sharma',
+    avatar: 'ravi',
+    isOnDuty: true,
+    isOnBreak: false,
+    currentCustomerId: 'cust-1',
+    serviceStartTime: Date.now() - 15 * 60 * 1000,
+  },
+  {
+    id: 'amit',
+    name: 'Amit Verma',
+    avatar: 'amit',
+    isOnDuty: true,
+    isOnBreak: false,
+    currentCustomerId: 'cust-2',
+    serviceStartTime: Date.now() - 5 * 60 * 1000,
+  },
+  {
+    id: 'imran',
+    name: 'Imran Khan',
+    avatar: 'imran',
+    isOnDuty: true,
+    isOnBreak: true,
+    currentCustomerId: null,
+    serviceStartTime: null,
+  },
+];
+
+export const initialServices = [
+  {
+    id: 'haircut',
+    name: {
+      en: 'Haircut & Styling',
+      gu: 'વાળ કાપવા અને સ્ટાઇલ (હેરકટ)',
+    },
+    durationMinutes: 30,
+    price: 150,
+    isActive: true,
+  },
+  {
+    id: 'beard_trim',
+    name: {
+      en: 'Beard Trim & Shape',
+      gu: 'દાઢી સેટિંગ (બિયર્ડ ટ્રીમ)',
+    },
+    durationMinutes: 15,
+    price: 80,
+    isActive: true,
+  },
+  {
+    id: 'hair_spa',
+    name: {
+      en: 'Royal Hair Spa Treatment',
+      gu: 'રોયલ હેર સ્પા ટ્રીટમેન્ટ',
+    },
+    durationMinutes: 45,
+    price: 400,
+    isActive: true,
+  },
+  {
+    id: 'shave_massage',
+    name: {
+      en: 'Classic Shave & Head Massage',
+      gu: 'ક્લાસિક શેવ અને હેડ મસાજ',
+    },
+    durationMinutes: 25,
+    price: 180,
+    isActive: true,
+  },
+  {
+    id: 'hair_color',
+    name: {
+      en: 'Hair Color & Highlights',
+      gu: 'હેર કલર અને હાઈલાઈટ્સ',
+    },
+    durationMinutes: 40,
+    price: 350,
+    isActive: true,
+  },
+];
+
+export const initialQueue = [
+  {
+    id: 'cust-1',
+    token: 'S-1',
+    tokenNumber: 1,
+    name: 'Rahul Patel',
+    phone: '9825011111',
+    serviceIds: ['haircut', 'beard_trim'],
+    totalDuration: 45,
+    totalPrice: 230,
+    barberPreference: 'ravi',
+    status: 'in_chair',
+    createdAt: Date.now() - 35 * 60 * 1000,
+    calledAt: Date.now() - 20 * 60 * 1000,
+    startedAt: Date.now() - 15 * 60 * 1000,
+    completedAt: null,
+    assignedBarberId: 'ravi',
+    isWalkIn: false,
+  },
+  {
+    id: 'cust-2',
+    token: 'S-2',
+    tokenNumber: 2,
+    name: 'Kunal Mehta',
+    phone: '9825022222',
+    serviceIds: ['haircut'],
+    totalDuration: 30,
+    totalPrice: 150,
+    barberPreference: 'amit',
+    status: 'in_chair',
+    createdAt: Date.now() - 30 * 60 * 1000,
+    calledAt: Date.now() - 10 * 60 * 1000,
+    startedAt: Date.now() - 5 * 60 * 1000,
+    completedAt: null,
+    assignedBarberId: 'amit',
+    isWalkIn: false,
+  },
+  {
+    id: 'cust-3',
+    token: 'S-3',
+    tokenNumber: 3,
+    name: 'Hardik Shah',
+    phone: '9825033333',
+    serviceIds: ['hair_spa'],
+    totalDuration: 45,
+    totalPrice: 400,
+    barberPreference: 'ravi', // specifically chose Ravi! Amit must skip this user
+    status: 'waiting',
+    createdAt: Date.now() - 25 * 60 * 1000,
+    calledAt: null,
+    startedAt: null,
+    completedAt: null,
+    assignedBarberId: null,
+    isWalkIn: false,
+  },
+  {
+    id: 'cust-4',
+    token: 'S-4',
+    tokenNumber: 4,
+    name: 'Jayesh Joshi',
+    phone: '9825044444',
+    serviceIds: ['haircut'],
+    totalDuration: 30,
+    totalPrice: 150,
+    barberPreference: 'any',
+    status: 'waiting',
+    createdAt: Date.now() - 20 * 60 * 1000,
+    calledAt: null,
+    startedAt: null,
+    completedAt: null,
+    assignedBarberId: null,
+    isWalkIn: true,
+  },
+  {
+    id: 'cust-5',
+    token: 'S-5',
+    tokenNumber: 5,
+    name: 'Vikram Chauhan',
+    phone: '9825055555',
+    serviceIds: ['beard_trim'],
+    totalDuration: 15,
+    totalPrice: 80,
+    barberPreference: 'any',
+    status: 'waiting',
+    createdAt: Date.now() - 18 * 60 * 1000,
+    calledAt: null,
+    startedAt: null,
+    completedAt: null,
+    assignedBarberId: null,
+    isWalkIn: false,
+  },
+  {
+    id: 'cust-6',
+    token: 'S-6',
+    tokenNumber: 6,
+    name: 'Bhavesh Parmar',
+    phone: '9825066666',
+    serviceIds: ['haircut', 'hair_spa'],
+    totalDuration: 75,
+    totalPrice: 550,
+    barberPreference: 'imran',
+    status: 'waiting',
+    createdAt: Date.now() - 15 * 60 * 1000,
+    calledAt: null,
+    startedAt: null,
+    completedAt: null,
+    assignedBarberId: null,
+    isWalkIn: false,
+  },
+  {
+    id: 'cust-7',
+    token: 'S-7',
+    tokenNumber: 7,
+    name: 'Chirag Vora',
+    phone: '9825077777',
+    serviceIds: ['shave_massage'],
+    totalDuration: 25,
+    totalPrice: 180,
+    barberPreference: 'any',
+    status: 'waiting',
+    createdAt: Date.now() - 10 * 60 * 1000,
+    calledAt: null,
+    startedAt: null,
+    completedAt: null,
+    assignedBarberId: null,
+    isWalkIn: true,
+  },
+  {
+    id: 'cust-8',
+    token: 'S-8',
+    tokenNumber: 8,
+    name: 'Dinesh Solanki',
+    phone: '9825088888',
+    serviceIds: ['haircut'],
+    totalDuration: 30,
+    totalPrice: 150,
+    barberPreference: 'amit',
+    status: 'waiting',
+    createdAt: Date.now() - 5 * 60 * 1000,
+    calledAt: null,
+    startedAt: null,
+    completedAt: null,
+    assignedBarberId: null,
+    isWalkIn: false,
+  },
+];
+
+export function createInitialState() {
+  return {
+    isOnlineQueueOpen: true,
+    closingTime: '21:00',
+    barbers: JSON.parse(JSON.stringify(initialBarbers)),
+    services: JSON.parse(JSON.stringify(initialServices)),
+    queue: JSON.parse(JSON.stringify(initialQueue)),
+    nextSequentialToken: 9,
+    lastCalledToken: null,
+    lastCalledTimestamp: null,
+  };
+}
+
+export function findNextCustomerForBarber(queue, barberId) {
+  const waiting = queue.filter(c => c.status === 'waiting');
+  for (const c of waiting) {
+    if (c.barberPreference === 'any' || c.barberPreference === barberId) {
+      return c;
+    }
+  }
+  return null;
+}
+
+export function findActiveCustomerByPhone(queue, phone) {
+  const clean = phone.trim().replace(/\D/g, '');
+  return queue.find(
+    c => c.phone.trim().replace(/\D/g, '') === clean &&
+         (c.status === 'waiting' || c.status === 'called' || c.status === 'in_chair')
+  ) || null;
+}

@@ -1,8 +1,19 @@
 # Salon Queue Management System
 
 **Live demo:** https://salon-queue-kappa.vercel.app/  
-**Hosted on:** Vercel (frontend)  
+**Hosted on:** Vercel (frontend) + Render (backend)  
+**Backend API & Health:** https://salon-queue-backend.onrender.com/api/health (or local `http://localhost:5000/api/health`)  
 **Test PIN for reception/barber screens:** `1234`
+
+---
+
+## Lab Submission Deliverables (TA Checklist)
+- **Live Demo Link:** [https://salon-queue-kappa.vercel.app/](https://salon-queue-kappa.vercel.app/)
+- **GitHub Repository:** [https://github.com/krishagohel-why/salon-queue](https://github.com/krishagohel-why/salon-queue)
+- **Prompt Trajectory (`prompts.md`):** [prompts.md](file:///C:/Users/krisha/.gemini/antigravity/scratch/salon-queue/prompts.md) (All prompts in sequence)
+- **Half-Page Reflection:** Included in [prompts.md](file:///C:/Users/krisha/.gemini/antigravity/scratch/salon-queue/prompts.md#half-page-reflection)
+- **3-Minute Video Demo Script:** [VIDEO_SCRIPT.md](file:///C:/Users/krisha/.gemini/antigravity/scratch/salon-queue/VIDEO_SCRIPT.md) (Timed word-for-word presentation script)
+- **Backend Service:** Node.js/Express + WebSocket in `/server` directory, ready for 1-click deployment via `render.yaml`.
 
 ---
 
@@ -108,30 +119,55 @@ This system solves these issues through real-time queueing, dynamic wait estimat
 
 ```bash
 # 1. Clone repository
-git clone <repo-url>
+git clone https://github.com/krishagohel-why/salon-queue.git
 cd salon-queue
 
-# 2. Install dependencies
+# 2. Install frontend dependencies
 npm install
 
-# 3. Start development server
+# 3. Start frontend development server (runs on port 5173)
 npm run dev
 
-# 4. Run automated rules verification suite
+# 4. Optional: Start Node/Express backend (runs on port 5000)
+cd server
+npm install
+npm start
+
+# 5. Run automated rules verification suite
 node scripts/verify-queue-rules.mjs
 
-# 5. Build for production
+# 6. Build frontend for production
 npm run build
 ```
 
 ---
 
+## Deploying Backend to Render (Free)
+
+1. Go to [render.com](https://render.com) and log in with your GitHub account.
+2. Click **"New +"** → **"Web Service"**.
+3. Select your repository: **`krishagohel-why/salon-queue`**.
+4. Configure service settings:
+   - **Name:** `salon-queue-backend`
+   - **Root Directory:** `server`
+   - **Runtime:** `Node`
+   - **Build Command:** `npm install`
+   - **Start Command:** `node index.js`
+   - **Instance Type:** `Free`
+5. Click **"Deploy Web Service"**.
+6. Once deployed, copy your Render URL (e.g. `https://salon-queue-backend.onrender.com`).
+7. In your Vercel project settings, you can optionally add the Environment Variable:  
+   `VITE_API_URL = https://salon-queue-backend.onrender.com`
+
+---
+
 ## Technology Stack
-- **Framework:** React 18 with TypeScript
+- **Frontend Framework:** React 18 with TypeScript
 - **Bundler:** Vite
-- **Styling:** Tailwind CSS (Dark Charcoal `#111827` / `#1F2937` + Gold `#D4A017`)
+- **Styling:** Tailwind CSS (Royal Velvet Maroon `#140308` + Champagne Beige `#DFC8A9`)
+- **Backend API:** Node.js + Express + WebSocket (`ws`) + CORS
 - **Routing:** React Router v6
-- **Icons:** Lucide React
-- **Audio:** Web Audio API (Multi-tone Chime Synthesizer)
-- **Haptics:** Navigator Vibration API
+- **Real-Time Sync:** HTML5 BroadcastChannel API + WebSocket Server + localStorage
+- **Audio & Haptics:** Web Audio API (Synthesized Chime) + Navigator Vibration API
 - **Celebration:** Canvas-Confetti
+- **Testing:** Automated rule validation suite (`scripts/verify-queue-rules.mjs`)
